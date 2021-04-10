@@ -1,18 +1,14 @@
 package ru.geekbrains.homework4;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-public class HW4Main {
+public class HW4Var2 {
     private static Object monitor = new Object();
     private static volatile char currentChar = 'A';
     private static final int MAX_ITERATIONS = 5;
 
     public static void main(String[] args) {
 
-        ExecutorService executorService = Executors.newCachedThreadPool();
+        Thread t1 = new Thread(() -> {
 
-        executorService.execute(() -> {
             try {
                 synchronized (monitor) {
                     for (int i = 0; i < MAX_ITERATIONS; i++) {
@@ -21,7 +17,7 @@ public class HW4Main {
                             monitor.wait();
                         }
 
-                        System.out.print(currentChar);
+                        System.out.print("A");
                         currentChar = 'B';
                         monitor.notifyAll();
                     }
@@ -31,10 +27,11 @@ public class HW4Main {
                 e.printStackTrace();
             }
 
-
         });
+        t1.start();
 
-        executorService.execute(() -> {
+
+        Thread t2 = new Thread(() -> {
             try {
                 synchronized (monitor) {
                     for (int i = 0; i < MAX_ITERATIONS; i++) {
@@ -43,20 +40,21 @@ public class HW4Main {
                             monitor.wait();
                         }
 
-                        System.out.print(currentChar);
+                        System.out.print("B");
                         currentChar = 'C';
                         monitor.notifyAll();
                     }
                 }
-
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-
         });
+        t2.start();
 
-        executorService.execute(() -> {
+
+        Thread t3 = new Thread(() -> {
+
             try {
                 synchronized (monitor) {
                     for (int i = 0; i < MAX_ITERATIONS; i++) {
@@ -65,22 +63,19 @@ public class HW4Main {
                             monitor.wait();
                         }
 
-                        System.out.print(currentChar);
+                        System.out.print("C");
                         currentChar = 'A';
                         monitor.notifyAll();
                     }
                 }
-
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-
         });
 
-        executorService.shutdown();
+        t3.start();
+
 
     }
-
 }
-
