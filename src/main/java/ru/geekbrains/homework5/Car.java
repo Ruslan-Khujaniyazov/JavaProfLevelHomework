@@ -50,8 +50,8 @@ public class Car implements Runnable {
 
         if(!isThereAWinner) {
             isThereAWinner = true;
-            System.out.printf(">>> The winner is %s!!!", name);
-            System.out.print(System.lineSeparator());
+            System.out.printf(">>> The winner is %s!!!" + System.lineSeparator(), name);
+            //System.out.print(System.lineSeparator());
         }
 
 
