@@ -1,6 +1,7 @@
 package ru.geekbrains.homework5;
 
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 public class Car implements Runnable {
 
@@ -8,12 +9,8 @@ public class Car implements Runnable {
     private Race race;
     private int speed;
     private String name;
-    private CountDownLatch cdl;
-    private CountDownLatch cdl1;
-
-    public static int getCarsCount() {
-        return CARS_COUNT;
-    }
+    private CyclicBarrier cyclicBarrier;
+    private static volatile boolean isThereAWinner;
 
     public String getName() {
         return name;
@@ -23,29 +20,27 @@ public class Car implements Runnable {
         return speed;
     }
 
-    public Car(Race race, int speed, CountDownLatch cdl, CountDownLatch cdl1) {
+    public Car(Race race, int speed, CyclicBarrier cyclicBarrier) {
         this.race = race;
         this.speed = speed;
         CARS_COUNT++;
         this.name = "Участник #" + CARS_COUNT;
-        this.cdl = cdl;
-        this.cdl1 = cdl1;
+        this.cyclicBarrier = cyclicBarrier;
     }
 
     @Override
     public void run() {
+
+
         try {
             System.out.println(this.name + " готовится");
             Thread.sleep(500 + (int) (Math.random() * 800));
             System.out.println(this.name + " готов");
-            cdl.countDown();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            cyclicBarrier.await();
 
-        try {
-            cdl1.await();
-        } catch (InterruptedException e) {
+            cyclicBarrier.await();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -53,6 +48,18 @@ public class Car implements Runnable {
             race.getStages().get(i).go(this);
         }
 
+        if(!isThereAWinner) {
+            isThereAWinner = true;
+            System.out.printf(">>> The winner is %s!!!", name);
+            System.out.print(System.lineSeparator());
+        }
+
+
+        try {
+            cyclicBarrier.await();
+        } catch (InterruptedException | BrokenBarrierException e) {
+            e.printStackTrace();
+        }
     }
 
 }

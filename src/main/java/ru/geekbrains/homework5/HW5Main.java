@@ -1,14 +1,13 @@
 package ru.geekbrains.homework5;
 
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 public class HW5Main {
     public static final int CARS_COUNT = 4;
-    public static final int RACE_START_ANNOUNCEMENT = 1;
 
     public static void main(String[] args) {
-        CountDownLatch cdl = new CountDownLatch(CARS_COUNT);
-        CountDownLatch cdl1 = new CountDownLatch(RACE_START_ANNOUNCEMENT);
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(CARS_COUNT + 1);
 
         System.out.println("ВАЖНОЕ ОБЪЯВЛЕНиЕ >>> Подготовка!!!");
 
@@ -16,26 +15,28 @@ public class HW5Main {
         Car[] cars = new Car[CARS_COUNT];
 
         for (int i = 0; i < cars.length; i++) {
-            cars[i] = new Car(race, 20 + (int) (Math.random() * 10), cdl, cdl1);
+
+            cars[i] = new Car(race, 20 + (int) (Math.random() * 10), cyclicBarrier);
         }
 
         for (int i = 0; i < cars.length; i++) {
 
             new Thread(cars[i]).start();
-            //cdl.countDown();
+
         }
 
         try {
-            cdl.await();
-        } catch (InterruptedException e) {
+            cyclicBarrier.await();
+            System.out.println("ВАЖНОЕ ОБЪЯВЛЕНиЕ >>> Гонка началась!!!");
+            cyclicBarrier.await();
+
+            cyclicBarrier.await();
+
+        } catch (InterruptedException | BrokenBarrierException e) {
             e.printStackTrace();
         }
 
-        System.out.println("ВАЖНОЕ ОБЪЯВЛЕНиЕ >>> Гонка началась!!!");
-        cdl1.countDown();
-
 
         System.out.println("ВАЖНОЕ ОБЪЯВЛЕНиЕ >>> Гонка закончилась!!!");
-
     }
 }
