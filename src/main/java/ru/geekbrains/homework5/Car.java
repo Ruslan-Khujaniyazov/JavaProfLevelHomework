@@ -2,6 +2,7 @@ package ru.geekbrains.homework5;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Car implements Runnable {
 
@@ -10,7 +11,7 @@ public class Car implements Runnable {
     private int speed;
     private String name;
     private CyclicBarrier cyclicBarrier;
-    private static volatile boolean isThereAWinner;
+    private static AtomicBoolean isThereAWinner = new AtomicBoolean();
 
     public String getName() {
         return name;
@@ -48,8 +49,7 @@ public class Car implements Runnable {
             race.getStages().get(i).go(this);
         }
 
-        if(!isThereAWinner) {
-            isThereAWinner = true;
+        if (isThereAWinner.compareAndSet(false, true)) {
             System.out.printf(">>> The winner is %s!!!" + System.lineSeparator(), name);
             //System.out.print(System.lineSeparator());
         }
