@@ -28,6 +28,7 @@ class HW6MainTest {
             add(Arguments.arguments(new int[]{2, 4, 5}, new int[]{5}));
             add(Arguments.arguments(new int[]{4, 5, 3, 2, 4, 7, 8}, new int[]{7, 8}));
             add(Arguments.arguments(new int[]{1, 4, 9, 0, 8}, new int[]{9, 0, 8}));
+            add(Arguments.arguments(new int[]{1, 4, 9, 0, 4}, new int[]{ }));
         }};
 
         return arguments.stream();
