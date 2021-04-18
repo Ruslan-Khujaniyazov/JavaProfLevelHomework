@@ -15,34 +15,18 @@ public class HW6Main {
     }
 
     public static int[] arrayOfNumbersAfterLastRequired (int[] array) {
-        int requiredNumberCount = 0;
-        int newArrayStartIndex = 0;
 
-        for (int number : array) {
-            if(number == FIRST_REQUIRED_NUMBER_IN_ARRAY) {
-                requiredNumberCount++;
+        for (int i = array.length - 1; i >= 0; i--) {
+
+            if (array[i] == FIRST_REQUIRED_NUMBER_IN_ARRAY) {
+                return Arrays.copyOfRange(array, i + 1, array.length);
             }
         }
 
-        if(requiredNumberCount == 0) {
-            throw new RuntimeException("No required number in array");
-        }
-
-        for (int i = 0; i < array.length; i++) {
-            if(array[i] == FIRST_REQUIRED_NUMBER_IN_ARRAY & requiredNumberCount > 0) {
-                requiredNumberCount--;
-            }
-
-            if (requiredNumberCount == 0) {
-                newArrayStartIndex = i + 1;
-                break;
-            }
-        }
-
-        int[] newArray = Arrays.copyOfRange(array, newArrayStartIndex, array.length);
-
-        return newArray;
+        throw new RuntimeException("No required number in array");
     }
+
+
 
     public static boolean isThereRequiredNumbersInArray(int[] array) {
         boolean isThereFirstRequiredNumber = false;
